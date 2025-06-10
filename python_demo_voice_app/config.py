@@ -17,7 +17,7 @@ class Config:
     OPENAI_ORG_ID = os.getenv("OPENAI_ORG_ID")
     
     # Voice app settings
-    VOICE_MODEL = "gpt-4o-realtime-preview-2024-10-01"
+    VOICE_MODEL = "gpt-4o-realtime-preview"
     VOICE = "alloy"  # Options: alloy, echo, fable, onyx, nova, shimmer
     
     # Audio settings

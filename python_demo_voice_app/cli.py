@@ -24,8 +24,8 @@ def setup_cli_logging(verbose: bool = False):
 async def run_tests():
     """Run the test suite"""
     try:
-        from tests.test_voice_app import main as test_main
-        await test_main()
+        from tests.test_autoblocks_voice_app import run_autoblocks_voice_tests
+        run_autoblocks_voice_tests()
     except ImportError:
         print("Error: Could not import test module")
         sys.exit(1)
