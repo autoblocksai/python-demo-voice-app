@@ -1,0 +1,32 @@
+exclude: '__snapshots__'
+repos:
+  - repo: https://github.com/pre-commit/pre-commit-hooks
+    rev: v5.0.0
+    hooks:
+      - id: trailing-whitespace
+      - id: end-of-file-fixer
+      - id: check-yaml
+      - id: check-json
+
+  - repo: https://github.com/astral-sh/ruff-pre-commit
+    rev: v0.11.2
+    hooks:
+      - id: ruff
+        args:
+          - --fix
+        language_version: python3.12
+
+  - repo: https://github.com/psf/black
+    rev: 25.1.0
+    hooks:
+      - id: black
+        language_version: python3.12
+
+  - repo: local
+    hooks:
+      - id: poetry-lock
+        name: poetry-lock
+        entry: poetry check --lock
+        language: system
+        pass_filenames: false
+        require_serial: true
