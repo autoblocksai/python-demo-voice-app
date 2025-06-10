@@ -1,18 +1,26 @@
 [tool.poetry]
 name = "python-demo-voice-app"
 version = "0.1.0"
-description = ""
+description = "A demo voice app that acts as a virtual clinic receptionist using OpenAI's Realtime API"
 authors = ["Adam Nolte <ajnolte12@gmail.com>"]
 readme = "README.md"
 
 [tool.poetry.dependencies]
 python = "^3.12"
+openai = "^1.50.0"
+websockets = "^12.0"
+python-dotenv = "^1.0.0"
+asyncio = "^3.4.3"
+pydub = "^0.25.1"
 
 [tool.poetry.group.dev.dependencies]
 pre-commit = "^4.0.0"
 black = "^23.0.0"
 isort = "^5.0.0"
 flake8 = "^6.0.0"
+
+[tool.poetry.scripts]
+voice-app = "python_demo_voice_app.cli:main"
 
 [build-system]
 requires = ["poetry-core"]
