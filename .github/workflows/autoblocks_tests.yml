@@ -1,0 +1,48 @@
+name: Autoblocks Tests
+
+on:
+  pull_request:
+  workflow_dispatch:
+    inputs:
+      autoblocks-overrides:
+        type: string
+        description: Overrides for Autoblocks-managed entities
+        required: false
+
+permissions:
+  # Allow commenting on pull requests
+  issues: write
+  pull-requests: write
+  contents: read
+
+jobs:
+  autoblocks-tests:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup python
+        uses: actions/setup-python@v5
+        with:
+          python-version-file: '.python-version'
+
+      - name: Install poetry
+        run: curl -sSL https://install.python-poetry.org | python3 -
+
+      - name: Install dependencies
+        run: poetry install
+
+      - name: Create CI Metadata
+        run: npx autoblocks testing setup-ci-context
+        env:
+          AUTOBLOCKS_V2_API_KEY: ${{ secrets.AUTOBLOCKS_V2_API_KEY }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Run tests
+        run: poetry run voice-app test
+        env:
+          AUTOBLOCKS_V2_API_KEY: ${{ secrets.AUTOBLOCKS_V2_API_KEY }}
+          OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          AUTOBLOCKS_OVERRIDES: ${{ inputs.autoblocks-overrides }}
