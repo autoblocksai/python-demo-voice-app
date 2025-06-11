@@ -15,12 +15,14 @@ from datetime import datetime
 from pathlib import Path
 from typing import Any, Dict, List
 
+import boto3
 from autoblocks.api.app_client import AutoblocksAppClient
 from autoblocks.scenarios.models import Message
 from autoblocks.scenarios.utils import get_selected_scenario_ids
 from autoblocks.testing.models import BaseTestCase
 from autoblocks.testing.v2.run import run_test_suite
 from autoblocks.tracer import init_auto_tracer
+from botocore.exceptions import NoCredentialsError, ClientError
 from dotenv import load_dotenv
 from openai import AsyncOpenAI
 from opentelemetry.instrumentation.openai import OpenAIInstrumentor
@@ -46,7 +48,7 @@ max_turns = 8
 class VoiceConversationOutput:
     """Output from a voice conversation test"""
     messages: List[Dict[str, Any]]
-    audio_file_path: str
+    recording_url: str
     total_turns: int
     conversation_duration_seconds: float
     patient_voice: str
@@ -79,9 +81,29 @@ class AutoblocksVoiceTestHarness:
         self.received_audio_chunks = []
         self.full_conversation_audio = []
         
-        # Create test audio directory
+        # Setup R2 client
+        self.r2_bucket = "autoblocks-storage"
+        self.r2_client = self._setup_r2_client()
+        
+        # Create test audio directory (as fallback)
         self.test_audio_dir = Path("test_audio/autoblocks")
         self.test_audio_dir.mkdir(parents=True, exist_ok=True)
+
+    def _setup_r2_client(self):
+        """Setup R2 (S3-compatible) client"""
+        try:
+            # R2 credentials should be set via environment variables:
+            # R2_ACCESS_KEY_ID, R2_SECRET_ACCESS_KEY, R2_ENDPOINT_URL
+            return boto3.client(
+                's3',
+                endpoint_url=os.getenv('R2_ENDPOINT_URL'),
+                aws_access_key_id=os.getenv('R2_ACCESS_KEY_ID'),
+                aws_secret_access_key=os.getenv('R2_SECRET_ACCESS_KEY'),
+                region_name='auto'  # R2 uses 'auto' as region
+            )
+        except Exception as e:
+            self.logger.warning(f"Failed to setup R2 client: {e}")
+            return None
 
     async def audio_capture_handler(self, audio_data: bytes):
         """Capture audio responses from the receptionist"""
@@ -271,7 +293,7 @@ class AutoblocksVoiceTestHarness:
             
             return VoiceConversationOutput(
                 messages=conversation_messages,
-                audio_file_path=str(audio_path),
+                recording_url=audio_path,
                 total_turns=turn - 1,
                 conversation_duration_seconds=duration,
                 patient_voice=test_case.patient_voice,
@@ -288,23 +310,55 @@ class AutoblocksVoiceTestHarness:
                     pass
             await voice_client.close()
 
-    def save_conversation_audio(self, filename: str) -> Path:
-        """Save the full conversation audio to a file"""
+    def save_conversation_audio(self, filename: str) -> str:
+        """Save the full conversation audio to R2 bucket"""
         if not self.full_conversation_audio:
             self.logger.warning("No conversation audio to save")
             return None
         
-        file_path = self.test_audio_dir / filename
         combined_audio = b''.join(self.full_conversation_audio)
         
-        with wave.open(str(file_path), 'wb') as wav_file:
+        # Create audio data in memory
+        audio_buffer = io.BytesIO()
+        with wave.open(audio_buffer, 'wb') as wav_file:
             wav_file.setnchannels(1)
             wav_file.setsampwidth(2)
             wav_file.setframerate(self.config.SAMPLE_RATE)
             wav_file.writeframes(combined_audio)
         
-        self.logger.info(f"💾 Saved conversation audio: {file_path}")
-        return file_path
+        audio_buffer.seek(0)
+        audio_data = audio_buffer.getvalue()
+        
+        # Generate R2 path: python-voice-demo-app/date/some-id/file.wav
+        current_date = datetime.now().strftime("%Y-%m-%d")
+        unique_id = str(uuid.uuid4())
+        r2_key = f"python-voice-demo-app/{current_date}/{unique_id}/{filename}"
+        
+        # Try to upload to R2, fallback to local storage
+        if self.r2_client:
+            try:
+                self.r2_client.put_object(
+                    Bucket=self.r2_bucket,
+                    Key=r2_key,
+                    Body=audio_data,
+                    ContentType='audio/wav'
+                )
+                # Generate Autoblocks storage URL
+                storage_url = f"http://storage.autoblocks.ai/{r2_key}"
+                self.logger.info(f"☁️ Uploaded conversation audio to R2: {storage_url}")
+                return storage_url
+                
+            except (NoCredentialsError, ClientError) as e:
+                self.logger.error(f"Failed to upload to R2: {e}")
+                self.logger.info("Falling back to local storage")
+        
+        # Fallback to local storage
+        file_path = self.test_audio_dir / filename
+        with open(file_path, 'wb') as f:
+            f.write(audio_data)
+        
+        self.logger.info(f"💾 Saved conversation audio locally: {file_path}")
+        return str(file_path)
 
 
 def run_autoblocks_voice_tests():
