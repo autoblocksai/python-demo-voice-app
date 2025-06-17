@@ -30,6 +30,16 @@ from pydub import AudioSegment
 
 from python_demo_voice_app.config import Config
 from python_demo_voice_app.voice_client import VoiceClient
+from .voice_evaluators import (
+    VoiceNaturalness,
+    MedicalProfessionalism,
+    AppointmentHandling,
+    PatientEmpathy,
+    InformationGathering,
+    ConversationFlow,
+    UrgencyAssessment,
+    CallResolution,
+)
 
 # Load environment variables and setup tracing
 load_dotenv()
@@ -416,7 +426,16 @@ def run_autoblocks_voice_tests():
             app_slug="virtual-clinic-receptionist",
             test_cases=test_cases,
             fn=test_fn,
-            evaluators=[],  # Add custom evaluators here if needed
+            evaluators=[
+                VoiceNaturalness(),
+                MedicalProfessionalism(),
+                AppointmentHandling(),
+                PatientEmpathy(),
+                InformationGathering(),
+                ConversationFlow(),
+                UrgencyAssessment(),
+                CallResolution(),
+            ],
         )
         
         logger.info("🎉 Autoblocks voice test suite completed!")
