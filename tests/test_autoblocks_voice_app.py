@@ -419,6 +419,7 @@ def run_autoblocks_voice_tests():
                 UrgencyAssessment(),
                 CallResolution(),
             ],
+            max_test_case_concurrency=1,
         )
 
         logger.info("🎉 Autoblocks voice test suite completed!")
