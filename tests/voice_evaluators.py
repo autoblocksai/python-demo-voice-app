@@ -119,53 +119,71 @@ class VoiceNaturalness(BaseVoiceConversationEvaluator):
     id = "voice_naturalness"
 
     def __init__(self):
-        super().__init__("voice_naturalness", "How natural and conversational did the receptionist sound in a voice interaction?")
+        super().__init__(
+            "voice_naturalness", "How natural and conversational did the receptionist sound in a voice interaction?"
+        )
 
 
 class MedicalProfessionalism(BaseVoiceConversationEvaluator):
     id = "medical_professionalism"
 
     def __init__(self):
-        super().__init__("medical_professionalism", "Was the receptionist appropriately professional for a medical setting while maintaining warmth?")
+        super().__init__(
+            "medical_professionalism",
+            "Was the receptionist appropriately professional for a medical setting while maintaining warmth?",
+        )
 
 
 class AppointmentHandling(BaseVoiceConversationEvaluator):
     id = "appointment_handling"
 
     def __init__(self):
-        super().__init__("appointment_handling", "How effectively did the receptionist handle appointment scheduling, rescheduling, or related requests?")
+        super().__init__(
+            "appointment_handling",
+            "How effectively did the receptionist handle appointment scheduling, rescheduling, or related requests?",
+        )
 
 
 class PatientEmpathy(BaseVoiceConversationEvaluator):
     id = "patient_empathy"
 
     def __init__(self):
-        super().__init__("patient_empathy", "Did the receptionist show appropriate empathy and understanding for the patient's concerns?")
+        super().__init__(
+            "patient_empathy",
+            "Did the receptionist show appropriate empathy and understanding for the patient's concerns?",
+        )
 
 
 class InformationGathering(BaseVoiceConversationEvaluator):
     id = "information_gathering"
 
     def __init__(self):
-        super().__init__("information_gathering", "How well did the receptionist gather necessary information from the patient?")
+        super().__init__(
+            "information_gathering", "How well did the receptionist gather necessary information from the patient?"
+        )
 
 
 class ConversationFlow(BaseVoiceConversationEvaluator):
     id = "conversation_flow"
 
     def __init__(self):
-        super().__init__("conversation_flow", "Did the conversation flow naturally with appropriate transitions and responses?")
+        super().__init__(
+            "conversation_flow", "Did the conversation flow naturally with appropriate transitions and responses?"
+        )
 
 
 class UrgencyAssessment(BaseVoiceConversationEvaluator):
     id = "urgency_assessment"
 
     def __init__(self):
-        super().__init__("urgency_assessment", "Did the receptionist appropriately assess and respond to the urgency of the patient's needs?")
+        super().__init__(
+            "urgency_assessment",
+            "Did the receptionist appropriately assess and respond to the urgency of the patient's needs?",
+        )
 
 
 class CallResolution(BaseVoiceConversationEvaluator):
     id = "call_resolution"
 
     def __init__(self):
-        super().__init__("call_resolution", "Was the patient's call resolved satisfactorily with clear next steps?") 
+        super().__init__("call_resolution", "Was the patient's call resolved satisfactorily with clear next steps?")

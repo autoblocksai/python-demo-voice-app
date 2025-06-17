@@ -12,7 +12,7 @@ When you run tests, the following files will be created:
 
 ### Individual Scenarios
 - **`scenario_1_greeting_and_appointment_request.wav`** - First test scenario
-- **`scenario_2_specific_doctor_request.wav`** - Second test scenario  
+- **`scenario_2_specific_doctor_request.wav`** - Second test scenario
 - **`scenario_3_ask_about_clinic_hours.wav`** - Third test scenario
 - **`scenario_4_emergency_triage.wav`** - Fourth test scenario
 
@@ -50,7 +50,7 @@ The system will automatically convert your audio to the correct format and gener
 
 Use any audio player to listen to the generated files:
 - **macOS**: `open full_conversation.wav`
-- **Windows**: `start full_conversation.wav`  
+- **Windows**: `start full_conversation.wav`
 - **Linux**: `xdg-open full_conversation.wav`
 
-Or use audio editing software like Audacity for detailed analysis. 
+Or use audio editing software like Audacity for detailed analysis.

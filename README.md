@@ -114,7 +114,7 @@ The AI receptionist can handle:
 
 ### Available Doctors
 - **Dr. Sarah Smith** - Family Medicine
-- **Dr. Michael Johnson** - Internal Medicine  
+- **Dr. Michael Johnson** - Internal Medicine
 - **Dr. Emily Williams** - Pediatrics
 
 ## Project Structure
@@ -145,7 +145,7 @@ Handles the conversation logic and function calls:
 - Function definitions for appointments and doctor lookup
 - Mock data for doctors and services
 
-### VoiceClient  
+### VoiceClient
 Manages the WebSocket connection to OpenAI:
 - Session configuration
 - Audio streaming (send/receive)
@@ -154,7 +154,7 @@ Manages the WebSocket connection to OpenAI:
 ### AudioTestHarness
 Comprehensive testing framework:
 - Audio file processing and format conversion
-- Conversation scenario testing  
+- Conversation scenario testing
 - Response capture and analysis
 
 ## Audio Processing
@@ -180,7 +180,7 @@ The receptionist can call these functions:
 ### `schedule_appointment`
 Parameters:
 - `patient_name`: Patient's full name
-- `doctor`: Requested doctor  
+- `doctor`: Requested doctor
 - `time_slot`: Requested appointment time
 - `reason`: Reason for the visit
 - `phone`: Patient's contact number
@@ -194,14 +194,14 @@ Parameters:
 ### Adding New Features
 
 1. **New Functions**: Add to `receptionist.py` in the `get_conversation_config()` method
-2. **Function Handlers**: Implement in `receptionist.py` `handle_function_call()` method  
+2. **Function Handlers**: Implement in `receptionist.py` `handle_function_call()` method
 3. **Tests**: Add scenarios to `test_voice_app.py`
 
 ### Logging
 
 The app uses Python's logging module:
 - **INFO**: General application flow
-- **DEBUG**: Detailed WebSocket and API interactions  
+- **DEBUG**: Detailed WebSocket and API interactions
 - **ERROR**: Error conditions and failures
 
 Logs are written to both console and `voice_app.log`.
@@ -225,7 +225,7 @@ Logs are written to both console and `voice_app.log`.
 3. **Audio Format Issues**
    ```
    Error loading audio file
-   ```  
+   ```
    Solution: Ensure audio files are in supported formats (WAV, MP3, etc.)
 
 ### Debug Mode
@@ -246,7 +246,7 @@ poetry run python -m python_demo_voice_app.cli run -v
 
 1. Fork the repository
 2. Create a feature branch
-3. Add tests for new functionality  
+3. Add tests for new functionality
 4. Ensure all tests pass
 5. Submit a pull request
 
