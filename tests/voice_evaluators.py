@@ -76,7 +76,8 @@ Conversation:
 {conversation_text}
 
 Please evaluate this specific criterion and call the evaluation function with your assessment.
-Consider that this is a voice conversation, so evaluate based on how natural and appropriate the interaction would be over the phone.
+Consider that this is a voice conversation.
+Evaluate based on how natural and appropriate the interaction would be over the phone.
 """
 
         try:
